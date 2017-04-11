@@ -1,48 +1,91 @@
-## Running the ghdata project
+## Detailed installation instructions for Ubuntu
 
-These instructions assume that you have already cloned the repository into a local directory called "ghdata". This can be accomplished with the github windows client, mac client or command line. 
+  1. Install Python:
 
-There are two ways to run the project. The recommended way is from a github download that allows you to store and commit changes locally and ultimately back to your team repo. For example, if you clone a repo locally, you would then navigate to that directory and follow these four steps.
+      ```bash
+      sudo apt-get install python3-pip
+      ```
 
-1. Start the server
+  2. Clone the repo:
 
-  > **mwc-084037:ghdata gogginss$** python -m ghdata.server
+     If you are downloading the official version:
 
-  > Failed to open config file.
+     ```bash
+      git clone https://github.com/OSSHealth/ghdata && cd ghdata
+      ```
 
-  > Default config saved to ghdata.cfg
+     If you are working on your own fork, set the upstream remote:
 
-2. Configure the ghtdata.cfg to be as below
+     ```bash
+     git clone https://[yourrepo]/ ghdata # The repo must be named ghdata to serve local files
+     git remote remove upstream
+     git remote add upstream git://github.com/OSSHealth/ghdata
+     ```
 
-  > **mwc-084037:ghdata gogginss$**
+     You can then `git fetch` and `git merge upstream/master` to get upstream changes.
+     
+     One way that is working effectively is to follow the instructions above, then execute the following: 
+     
+     ```bash
+     git pull upstream master
+     git push
+     ```
+     
+     This pushes the changes from the parent repository up to the repository you are using on GitHub.  
+     Then your teammates can have access to your updates.  Their deployment should be much simpler. 
+    
+     You also should change the directory name, in this case.  The automated script does this for you if you run it; 
+     otherwise, you will need to change the root yourself. 
+    
+     ```bash
+     cd 
+     mv [yourrepo] ghdata
+     cd ghdata
+     ```
+     For example: 
+     
+     ```bash
+     cd
+     mv ghdata-team39-sprint1 ghdata
+     cd ghdata
+     ```
+  
+  3. Create a configuration file. The following command will create
+     a file ghdata.cfg suitable for development:
 
-  > **ghdata.cfg should look like this:**
+      ```bash
+      cat > ghdata.cfg <<SOFTDEV-CONFIG
+      [Server]
+      host = 0.0.0.0
+      port = 5000
 
-  > [Database]
+      [Database]
+      host = opendata.missouri.edu
+      port = 3306
+      user = msr
+      pass = ghtorrent
+      name = msr
 
-  > host = opendata.missouri.edu
+      [PublicWWW]
+      apikey = 0
 
-  > port = 3306
+      [Development]
+      developer = 1
+      SOFTDEV-CONFIG
+      ```
 
-  > user = msr
+  4. Install GHData
 
-  > pass = ghtorrent
+      ```bash
+      sudo pip3 install --upgrade .
+      ```
 
-  > name = msr
-  >
-  > [PublicWWW]
-  >
-  > apikey = 0
-  >
-  > [Development]
+  4. Run:
 
-  > developer = 1
-
-3. Restart the server
-  > **mwc-084037:ghdata gogginss$** python -m ghdata.server
-
-4. Start Front End
-
- > **mwc-084037:ghtdata gogginss$** cd frontend
-
- > **mwc-084037:frontend gogginss$** python -m http.server
+      ```bash
+      ghdata
+      ```
+      or, if you want to run it in the background:
+      ```
+      ~/ghdata$ nohup ghdata >ghdata.log 2>ghdata.err &
+      ```
