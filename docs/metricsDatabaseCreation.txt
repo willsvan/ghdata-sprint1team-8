@@ -1,0 +1,32 @@
+CREATE DATABASE metrics; 
+
+CREATE TABLE commits(
+	id int(11) NOT NULL,
+	contributor_id int(11), 
+	commits int(11), 
+	commit_date date, 
+	repo_id int(11), 
+	PRIMARY KEY(id), 
+	FOREIGN KEY(contributor_id) REFERENCES repos(contributor_id)
+); 
+
+CREATE TABLE repos(
+	id int(11) NOT NULL,
+	contributor_id int(11), 
+	repo_name varchar(64), 
+	PRIMARY KEY(id), 
+	FOREIGN KEY(contributor_id) REFERENCES project_members(contributor_id)
+); 
+
+CREATE TABLE project_members(
+	contributor_id int(11) NOT NULL,
+	repo_id int(11), 
+); 
+
+CREATE TABLE users(
+	id int(11) NOT NULL,
+	username varchar(64), 
+	PRIMARY KEY(id) NOT NULL, 
+); 
+
+
